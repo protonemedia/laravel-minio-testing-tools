@@ -36,7 +36,7 @@ Add the trait to your test, and add the `bootUsesMinIOServer` method:
 ```php
 <?php
 
-namespace Tests\Browser\Backend;
+namespace Tests\Browser;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use ProtoneMedia\LaravelMinioTestingTools\UsesMinioServer;
