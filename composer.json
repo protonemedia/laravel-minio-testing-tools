@@ -1,0 +1,66 @@
+{
+    "name": "protonemedia/laravel-minio-testing-tools",
+    "description": "This is my package laravel-minio-testing-tools",
+    "keywords": [
+        "protonemedia",
+        "laravel",
+        "laravel-minio-testing-tools"
+    ],
+    "homepage": "https://github.com/protonemedia/laravel-minio-testing-tools",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pascal Baljet",
+            "email": "pascal@protone.media",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0|^8.1",
+        "guzzlehttp/guzzle": "^7.4",
+        "illuminate/contracts": "^9.0",
+        "spatie/laravel-package-tools": "^1.9.2",
+        "spatie/temporary-directory": "^2.1"
+    },
+    "require-dev": {
+        "nunomaduro/collision": "^6.0",
+        "orchestra/testbench": "^7.0",
+        "pestphp/pest": "^1.21",
+        "pestphp/pest-plugin-laravel": "^1.1",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "ProtoneMedia\\LaravelMinioTestingTools\\": "src",
+            "ProtoneMedia\\LaravelMinioTestingTools\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ProtoneMedia\\LaravelMinioTestingTools\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ProtoneMedia\\LaravelMinioTestingTools\\LaravelMinioTestingToolsServiceProvider"
+            ],
+            "aliases": {
+                "LaravelMinioTestingTools": "ProtoneMedia\\LaravelMinioTestingTools\\Facades\\LaravelMinioTestingTools"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
