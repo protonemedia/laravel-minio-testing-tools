@@ -17,6 +17,10 @@ trait UsesMinIOServer
 
     public Collection $minIODiskConfig;
 
+    public bool $minIODestroyed = false;
+
+    public bool $minIOEnvironmentRestored = false;
+
     public function bootUsesMinIOServer()
     {
         $this->startMinIOServer();
@@ -120,14 +124,24 @@ trait UsesMinIOServer
 
         $pid = $this->exec("minio server {$temporaryDirectory->path()} --address :{$this->minIOPort} > /dev/null 2>&1 & echo $!");
 
-        register_shutdown_function(function () use ($pid, $temporaryDirectory) {
+        $killMinIOAndDeleteStorage = function () use ($pid, $temporaryDirectory) {
+            if ($this->minIODestroyed) {
+                return;
+            }
+
             if ($pid) {
                 $this->exec("kill {$pid}");
             }
 
             // deleting the directory might fail when minio is not killed yet
             rescue(fn () => $temporaryDirectory->delete());
-        });
+
+            $this->minIODestroyed = true;
+        };
+
+        $this->beforeApplicationDestroyed($killMinIOAndDeleteStorage);
+
+        register_shutdown_function($killMinIOAndDeleteStorage);
 
         $tries = 0;
 
@@ -216,6 +230,8 @@ trait UsesMinIOServer
 
         file_put_contents($envFilename, $env);
 
+        $this->beforeApplicationDestroyed(fn () => $this->restoreEnvironmentFile());
+
         register_shutdown_function(fn () => $this->restoreEnvironmentFile());
     }
 
@@ -227,6 +243,10 @@ trait UsesMinIOServer
      */
     public function restoreEnvironmentFile()
     {
+        if ($this->minIOEnvironmentRestored) {
+            return;
+        }
+
         $envFilename = base_path('.env');
 
         if (!file_exists($envFilename)) {
@@ -244,5 +264,7 @@ trait UsesMinIOServer
         });
 
         file_put_contents($envFilename, $env);
+
+        $this->minIOEnvironmentRestored = true;
     }
 }

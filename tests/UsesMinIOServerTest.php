@@ -1,11 +1,14 @@
 <?php
 
+use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
+use Orchestra\Testbench\Concerns\CreatesApplication;
 use ProtoneMedia\LaravelMinioTestingTools\UsesMinIOServer;
 
-class DummyTestCase
+class DummyTestCase extends TestCase
 {
+    use CreatesApplication;
     use UsesMinIOServer;
 }
 
