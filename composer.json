@@ -51,16 +51,6 @@
             "pestphp/pest-plugin": true
         }
     },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "ProtoneMedia\\LaravelMinioTestingTools\\LaravelMinioTestingToolsServiceProvider"
-            ],
-            "aliases": {
-                "LaravelMinioTestingTools": "ProtoneMedia\\LaravelMinioTestingTools\\Facades\\LaravelMinioTestingTools"
-            }
-        }
-    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
