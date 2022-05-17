@@ -8,6 +8,8 @@
 
 This package provides a trait to run your tests against a MinIO S3 server.
 
+📝 Blog post: https://protone.media/en/blog/how-to-use-a-local-minio-s3-server-with-laravel-and-automatically-configure-it-for-your-laravel-dusk-test-suite
+
 ## Support
 
 We proudly support the community by developing Laravel packages and giving them away for free. Keeping track of issues and pull requests takes time, but we're happy to help! If this package saves you time or if you're relying on it professionally, please consider [supporting the maintenance and development](https://github.com/sponsors/pascalbaljet).
@@ -36,16 +38,16 @@ Add the trait to your test, and add the `bootUsesMinIOServer` method:
 ```php
 <?php
 
-namespace Tests\Browser\Backend;
+namespace Tests\Browser;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use ProtoneMedia\LaravelMinioTestingTools\UsesMinioServer;
+use ProtoneMedia\LaravelMinioTestingTools\UsesMinIOServer;
 use Tests\DuskTestCase;
 
 class UploadVideoTest extends DuskTestCase
 {
     use DatabaseMigrations;
-    use UsesMinioServer;
+    use UsesMinIOServer;
 
     protected function setUp(): void
     {
