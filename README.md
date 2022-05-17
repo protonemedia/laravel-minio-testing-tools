@@ -41,13 +41,13 @@ Add the trait to your test, and add the `bootUsesMinIOServer` method:
 namespace Tests\Browser;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use ProtoneMedia\LaravelMinioTestingTools\UsesMinioServer;
+use ProtoneMedia\LaravelMinioTestingTools\UsesMinIOServer;
 use Tests\DuskTestCase;
 
 class UploadVideoTest extends DuskTestCase
 {
     use DatabaseMigrations;
-    use UsesMinioServer;
+    use UsesMinIOServer;
 
     protected function setUp(): void
     {
