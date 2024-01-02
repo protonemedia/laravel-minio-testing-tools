@@ -26,8 +26,8 @@ It's the *magic* of Inertia.js with the *simplicity* of Blade. [Splade](https://
 * Updates and restores the `.env` file.
 * Works with [Laravel Dusk](https://laravel.com/docs/9.x/dusk).
 * Works on [GitHub Actions](#github-actions)
-* Compatible with Laravel 9.0.
-* PHP 8.0 or higher is required.
+* Compatible with Laravel 10.
+* PHP 8.1 or higher is required.
 
 ## Installation
 
