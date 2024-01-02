@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Orchestra\Testbench\Concerns\CreatesApplication;
 use ProtoneMedia\LaravelMinioTestingTools\UsesMinIOServer;
 
@@ -19,7 +20,7 @@ beforeEach(function () {
 
     Artisan::call('config:clear');
 
-    $this->testCase = new DummyTestCase;
+    $this->testCase = new DummyTestCase(Str::random());
 });
 
 it('returns the configured port', function () {
