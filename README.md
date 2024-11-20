@@ -23,7 +23,7 @@ This package provides a trait to run your tests against a MinIO S3 server.
 * Works with [Laravel Dusk](https://laravel.com/docs/9.x/dusk).
 * Works on [GitHub Actions](#github-actions)
 * Compatible with Laravel 10.
-* PHP 8.1 or higher is required.
+* PHP 8.2 or higher is required.
 
 ## Installation
 
