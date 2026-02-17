@@ -94,7 +94,7 @@ trait UsesMinIOServer
      * @param integer $timeout
      * @return string
      */
-    private function exec(string $cmd, int $timeout = 10): string
+    private function exec(string $cmd, int $timeout = 30): string
     {
         $process = Process::fromShellCommandline($cmd)->setTimeout($timeout);
         $process->run();
@@ -172,7 +172,7 @@ trait UsesMinIOServer
         $region   = config("filesystems.disks.{$this->minIODisk}.region") ?: 'eu-west-1';
         $bucket   = config("filesystems.disks.{$this->minIODisk}.bucket") ?: 'bucket-name';
 
-        $addLocalMinIO = $this->exec("until (mc config host add local {$url} minioadmin minioadmin) do echo '...waiting...' && sleep 1; done;", 30);
+        $addLocalMinIO = $this->exec("until (mc config host add local {$url} minioadmin minioadmin) do echo '...waiting...' && sleep 1; done;", 60);
 
         if (!Str::contains($addLocalMinIO, 'Added `local` successfully.')) {
             $this->fail('Could not configure MinIO server');
