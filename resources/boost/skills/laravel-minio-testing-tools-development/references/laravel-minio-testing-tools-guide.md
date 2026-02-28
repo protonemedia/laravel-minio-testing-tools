@@ -118,9 +118,3 @@ AWS_USE_PATH_STYLE_ENDPOINT=true
 - **`php artisan serve`:** README warning: don’t use `--no-reload` because `.env` changes on-the-fly.
 - **Binary availability:** failures often come from `minio`/`mc` missing or lacking execute permission.
 - **Networking in CI:** ensure `127.0.0.1:9000` is reachable from both PHP and the browser runner.
-
-## Testing
-
-```bash
-composer test
-```

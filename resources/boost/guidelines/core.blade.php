@@ -1,10 +1,10 @@
-{{-- Laravel MinIO Testing Tools Guidelines for AI Code Assistants --}}
-{{-- Source: https://github.com/protonemedia/laravel-minio-testing-tools --}}
-{{-- License: MIT | (c) ProtoneMedia --}}
+{-- Laravel MINIO Testing Tools Guidelines for AI Code Assistants --}
+{-- Source: https://github.com/protonemedia/laravel-minio-testing-tools --}
+{-- License: MIT | (c) ProtoneMedia --}
 
-## Laravel MinIO Testing Tools
+## Laravel MINIO Testing Tools
 
-- Provides a trait to boot/configure a MinIO S3 server for tests (including Laravel Dusk) and update filesystem config/env on the fly.
-- Always activate the `laravel-minio-testing-tools-development` skill when making package-specific changes.
-- For setup, GitHub Actions recipes, and caveats, consult:
+- This project uses **Laravel MINIO Testing Tools** (ProtoneMedia) in a Laravel application.
+- Activate the **`laravel-minio-testing-tools-development`** skill when you are **integrating, configuring, or using** this package in app code (controllers, jobs, tests, config, routes, Blade, etc.).
+- Use the reference doc for the package’s public API and common recipes:
   - `resources/boost/skills/laravel-minio-testing-tools-development/references/laravel-minio-testing-tools-guide.md`
