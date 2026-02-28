@@ -172,14 +172,14 @@ trait UsesMinIOServer
         $region   = config("filesystems.disks.{$this->minIODisk}.region") ?: 'eu-west-1';
         $bucket   = config("filesystems.disks.{$this->minIODisk}.bucket") ?: 'bucket-name';
 
-        $addLocalMinIO = $this->exec("until (mc alias set local {$url} minioadmin minioadmin) do echo '...waiting...' && sleep 1; done;");
+        $addLocalMinIO = $this->exec("until (mc config host add local {$url} minioadmin minioadmin) do echo '...waiting...' && sleep 1; done;");
 
         if (!Str::contains($addLocalMinIO, 'Added `local` successfully.')) {
             $this->fail('Could not configure MinIO server');
         }
 
         $this->exec("mc admin user add local {$username} {$password}");
-        $this->exec("mc admin policy attach local readwrite --user={$username}");
+        $this->exec("mc admin policy set local readwrite user={$username}");
         $this->exec("mc mb local/{$bucket} --region={$region}");
 
         $this->initMinIOConfigCollection();
