@@ -1,43 +1,85 @@
 ---
 name: laravel-minio-testing-tools-development
-description: Application integration guidance for protonemedia/laravel-minio-testing-tools.
+description: Build and work with protonemedia/laravel-minio-testing-tools features including configuring a MinIO server for Laravel tests, using the UsesMinIOServer trait, and setting up GitHub Actions CI pipelines with S3-compatible storage.
 license: MIT
 metadata:
   author: ProtoneMedia
 ---
 
-# Laravel MINIO Testing Tools Development
+# Laravel Minio Testing Tools Development
 
 ## Overview
-Use `protonemedia/laravel-minio-testing-tools.` in a Laravel application.
+Use protonemedia/laravel-minio-testing-tools to run a MinIO S3-compatible server during Laravel tests. Supports automatic disk configuration, `.env` management, Dusk browser tests, and GitHub Actions CI.
 
 ## When to Activate
-- Activate when adding, configuring, or using this package in application code (controllers, jobs, commands, tests, config, routes, Blade, etc.).
-- Activate when code references `protonemedia/laravel-minio-testing-tools.` classes, facades, config, or documented features.
+- Activate when working with S3-compatible storage in tests, or configuring MinIO for a Laravel test suite.
+- Activate when code references `UsesMinIOServer`, `bootUsesMinIOServer()`, or MinIO disk configuration in tests.
+- Activate when the user wants to set up CI pipelines that need an S3-compatible object store.
 
 ## Scope
-- In scope: documented public API usage, configuration, testing patterns, and common integration recipes.
-- Out of scope: modifying this package’s internal source code unless the user explicitly says they are contributing to the package.
+- In scope: trait usage, test setup, disk configuration, Dusk integration, GitHub Actions recipes.
+- Out of scope: modifying this package's internal source code unless the user explicitly says they are contributing to the package.
 
 ## Workflow
-1. Identify the task (install/setup, configuration, feature usage, debugging, tests, etc.).
+1. Identify the task (test setup, CI configuration, Dusk integration, debugging, etc.).
 2. Read `references/laravel-minio-testing-tools-guide.md` and focus on the relevant section.
-3. Apply the documented patterns and keep examples minimal and Laravel-native.
+3. Apply the patterns from the reference, keeping code minimal and Laravel-native.
 
 ## Core Concepts
-- Prefer the patterns shown in the full documentation and reference.
-- Keep examples copy-pastable and aligned with typical Laravel conventions.
+
+### Trait Setup
+Every test that needs MinIO must use the `UsesMinIOServer` trait and boot it in `setUp()`:
+
+```php
+use ProtoneMedia\LaravelMinioTestingTools\UsesMinIOServer;
+
+class UploadVideoTest extends DuskTestCase
+{
+    use UsesMinIOServer;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->bootUsesMinIOServer();
+    }
+}
+```
+
+### GitHub Actions — Download Binaries
+```yaml
+- name: Download MinIO S3 server and client
+  run: |
+    wget https://dl.minio.io/server/minio/release/linux-amd64/minio -q -P /usr/local/bin/
+    wget https://dl.minio.io/client/mc/release/linux-amd64/mc -q -P /usr/local/bin/
+    chmod +x /usr/local/bin/minio
+    chmod +x /usr/local/bin/mc
+```
+
+### Environment Variables for Dusk
+```env
+AWS_ACCESS_KEY_ID=user
+AWS_SECRET_ACCESS_KEY=password
+AWS_DEFAULT_REGION=eu-west-1
+AWS_BUCKET=bucket-name
+AWS_URL=http://127.0.0.1:9000
+AWS_ENDPOINT=http://127.0.0.1:9000
+AWS_USE_PATH_STYLE_ENDPOINT=true
+```
 
 ## Do and Don't
 
 Do:
-- Follow the package’s documented installation and configuration steps.
-- Provide examples that compile in a typical Laravel project.
-- Call out relevant pitfalls (configuration, queues, filesystem, permissions, testing) when applicable.
+- Always call `$this->bootUsesMinIOServer()` inside `setUp()` after `parent::setUp()`.
+- Ensure the `minio` and `mc` binaries are installed and executable before running tests.
+- Use `AWS_USE_PATH_STYLE_ENDPOINT=true` when configuring S3 disks for MinIO.
+- Avoid `php artisan serve --no-reload` because the package modifies `.env` on-the-fly.
 
 Don't:
-- Don't invent undocumented methods/options; stick to the docs and reference.
-- Don't suggest changing package internals unless the user explicitly wants to contribute upstream.
+- Don't forget to install the package as a dev dependency (`--dev`).
+- Don't run processes alongside tests that cannot handle `.env` file changes mid-run.
+- Don't assume MinIO binaries are present in CI — always add a download step.
+- Don't use `env()` outside of config files; rely on Laravel's config system.
 
 ## References
 - `references/laravel-minio-testing-tools-guide.md`
