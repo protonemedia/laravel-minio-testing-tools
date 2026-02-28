@@ -1,4 +1,6 @@
-# Laravel MinIO Testing Tools Reference
+# Laravel MINIO Testing Tools Reference
+
+Complete reference for `protonemedia/laravel-minio-testing-tools.`. Full documentation: https://github.com/protonemedia/laravel-minio-testing-tools#readme
 
 Complete reference for `protonemedia/laravel-minio-testing-tools`.
 

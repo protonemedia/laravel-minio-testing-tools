@@ -4,7 +4,5 @@
 
 ## Laravel MINIO Testing Tools
 
-- This project uses **Laravel MINIO Testing Tools** (ProtoneMedia) in a Laravel application.
-- Activate the **`laravel-minio-testing-tools-development`** skill when you are **integrating, configuring, or using** this package in app code (controllers, jobs, tests, config, routes, Blade, etc.).
-- Use the reference doc for the package’s public API and common recipes:
-  - `resources/boost/skills/laravel-minio-testing-tools-development/references/laravel-minio-testing-tools-guide.md`
+- `protonemedia/laravel-minio-testing-tools.` helps you work with Laravel MINIO Testing Tools in Laravel.
+- Always activate the `laravel-minio-testing-tools-development` skill when working with Laravel MINIO Testing Tools configuration, integration, or any code that relies on this package.
