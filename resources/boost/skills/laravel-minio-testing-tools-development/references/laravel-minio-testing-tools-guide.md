@@ -1,19 +1,15 @@
-# laravel-minio-testing-tools development guide
+# Laravel MinIO Testing Tools Reference
 
-For full documentation, see the README: https://github.com/protonemedia/laravel-minio-testing-tools#readme
+Complete reference for `protonemedia/laravel-minio-testing-tools`. Full documentation: https://github.com/protonemedia/laravel-minio-testing-tools#readme
 
-## At a glance
-Testing utilities/trait to run test suites against a **MinIO** (S3-compatible) server.
+## Start Here
+- README / docs: https://github.com/protonemedia/laravel-minio-testing-tools#readme
 
-## Local setup
-- Install dependencies: `composer install`
-- Keep the dev loop package-focused (avoid adding app-only scaffolding).
+## Notes for AI Assistants
+- Treat the README as the source of truth for the supported public API.
+- Keep changes backward-compatible unless the change is explicitly a breaking change.
 
 ## Testing
-- Run: `composer test` (preferred) or the repository’s configured test runner.
-- Add regression tests for bug fixes.
+- Run the repository test command (see README / composer scripts).
 
-## Notes & conventions
-- Keep tests deterministic and isolated (bucket names, cleanup).
-- Prefer configuration via env vars to fit CI.
-- Document any required Docker/MinIO setup in README when changing behavior.
+For detailed usage examples and the full API surface, refer to the README.

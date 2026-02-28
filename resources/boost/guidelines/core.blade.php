@@ -1,14 +1,8 @@
-{{--
-  Laravel Boost guidelines (repository core)
+{{-- Laravel MinIO Testing Tools Guidelines for AI Code Assistants --}}
+{{-- Source: https://github.com/protonemedia/laravel-minio-testing-tools --}}
+{{-- License: MIT | (c) ProtoneMedia --}}
 
-  This file intentionally stays small: it links this repository to its package-specific Boost skill.
---}}
+## Laravel MinIO Testing Tools
 
-<section>
-    <h2>Repository development skill</h2>
-
-    <p>
-        When working on this repository, activate the <code>laravel-minio-testing-tools-development</code> skill.
-        It contains package-specific conventions, testing notes, and common pitfalls.
-    </p>
-</section>
+- Helpers for testing S3/MinIO integrations in Laravel.
+- Always activate the `laravel-minio-testing-tools-development` skill when making package-specific changes.
