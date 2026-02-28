@@ -1,6 +1,6 @@
 ---
 name: laravel-minio-testing-tools-development
-description: Development guidance for `protonemedia/laravel-minio-testing-tools` (Helpers for testing S3/MinIO integrations in Laravel.).
+description: Development guidance for protonemedia/laravel-minio-testing-tools. Helpers for testing S3/MinIO integrations in Laravel.
 license: MIT
 metadata:
   author: ProtoneMedia
@@ -10,7 +10,7 @@ metadata:
 # Laravel MinIO Testing Tools Development
 
 ## Overview
-Use this skill when changing package code, docs, tests, or release tooling for `protonemedia/laravel-minio-testing-tools`.
+Use this skill when changing package code, docs, tests, or release tooling for protonemedia/laravel-minio-testing-tools.
 
 ## When to Activate
 - You are modifying code in this repository.
@@ -19,8 +19,8 @@ Use this skill when changing package code, docs, tests, or release tooling for `
 
 ## Workflow
 1. Skim the README / docs to confirm the public contract.
-2. Read  for common patterns and pitfalls.
+2. Read references/laravel-minio-testing-tools-guide.md for common patterns and pitfalls.
 3. Keep changes small, add/update tests when behavior changes, and avoid breaking API changes.
 
 ## References
-- 
+- references/laravel-minio-testing-tools-guide.md
