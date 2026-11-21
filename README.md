@@ -22,7 +22,7 @@ This package provides a trait to run your tests against a MinIO S3 server.
 * Updates and restores the `.env` file.
 * Works with [Laravel Dusk](https://laravel.com/docs/9.x/dusk).
 * Works on [GitHub Actions](#github-actions)
-* Compatible with Laravel 10.
+* Compatible with Laravel 12 and 13.
 * PHP 8.2 or higher is required.
 
 ## Installation

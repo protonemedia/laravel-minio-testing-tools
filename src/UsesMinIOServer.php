@@ -49,7 +49,7 @@ trait UsesMinIOServer
     {
         $url = config("filesystems.disks.{$this->minIODisk}.endpoint");
 
-        return parse_url($url, PHP_URL_PORT) ?: null;
+        return parse_url((string) $url, PHP_URL_PORT) ?: null;
     }
 
     /**
