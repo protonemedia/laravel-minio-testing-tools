@@ -13,14 +13,14 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        php: [8.5, 8.4, 8.3, 8.2]
-        laravel: [12.*, 11.*]
+        php: [8.6, 8.5, 8.4, 8.3]
+        laravel: [13.*, 12.*]
         stability: [prefer-lowest, prefer-stable]
         include:
+          - laravel: 13.*
+            testbench: 11.*
           - laravel: 12.*
             testbench: 10.*
-          - laravel: 11.*
-            testbench: ^9.10
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -45,14 +45,21 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Download MinIO S3 server and client
+      # MinIO no longer publishes binaries, so we build the last releases of
+      # the server and client from source on every run.
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: false
+
+      - name: Install MinIO S3 server and client
         run: |
-          wget https://dl.minio.io/server/minio/release/linux-amd64/minio -q -P /usr/local/bin/
-          wget https://dl.minio.io/client/mc/release/linux-amd64/mc -q -P /usr/local/bin/
-          chmod +x /usr/local/bin/minio
-          chmod +x /usr/local/bin/mc
-          minio --version
-          mc --version
+          GOBIN=~/minio/bin CGO_ENABLED=0 go install github.com/minio/minio@RELEASE.2025-10-15T17-29-55Z
+          GOBIN=~/minio/bin CGO_ENABLED=0 go install github.com/minio/mc@RELEASE.2025-08-13T08-35-41Z
+          echo ~/minio/bin >> "$GITHUB_PATH"
+          ~/minio/bin/minio --version
+          ~/minio/bin/mc --version
 
       - name: Execute tests
         run: vendor/bin/pest
