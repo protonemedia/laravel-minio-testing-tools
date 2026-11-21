@@ -10,6 +10,9 @@ This package provides a trait to run your tests against a MinIO S3 server.
 
 📝 Blog post: https://protone.media/en/blog/how-to-use-a-local-minio-s3-server-with-laravel-and-automatically-configure-it-for-your-laravel-dusk-test-suite
 
+> [!WARNING]
+> MinIO itself is no longer maintained. The open-source [MinIO Server](https://github.com/minio/minio) and [MinIO Client](https://github.com/minio/mc) repositories are archived, and MinIO no longer publishes binaries or security updates for them. MinIO offers [AIStor](https://min.io/download) as the alternative. You may still build the last community releases from source, as shown in the [Installation](#installation) section.
+
 ## Sponsor Us
 
 [<img src="https://inertiaui.com/visit-card.jpg" />](https://inertiaui.com/inertia-table?utm_source=github&utm_campaign=laravel-minio-testing-tools)
@@ -27,7 +30,12 @@ This package provides a trait to run your tests against a MinIO S3 server.
 
 ## Installation
 
-Make sure you've downloaded the [MinIO Server and Client](https://min.io/download#/linux) for your OS.
+Make sure the MinIO Server (`minio`) and Client (`mc`) are on your `PATH`. MinIO distributes them as source only, so you may build them with Go:
+
+```bash
+go install github.com/minio/minio@RELEASE.2025-10-15T17-29-55Z
+go install github.com/minio/mc@RELEASE.2025-08-13T08-35-41Z
+```
 
 You can install the package via composer:
 
@@ -69,22 +77,35 @@ That's it!
 
 ## GitHub Actions
 
-The easiest way is to download the MinIO Server and Client before the tests are run:
+You may build the MinIO Server and Client from source before the tests run, and cache them for later runs:
 
 ```yaml
 jobs:
   test:
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
-      - name: Download MinIO S3 server and client
+      - name: Cache MinIO S3 server and client
+        id: minio-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/minio/bin
+          key: minio-RELEASE.2025-10-15T17-29-55Z-mc-RELEASE.2025-08-13T08-35-41Z-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Setup Go
+        if: steps.minio-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: false
+
+      - name: Install MinIO S3 server and client
         run: |
-          wget https://dl.minio.io/server/minio/release/linux-amd64/minio -q -P /usr/local/bin/
-          wget https://dl.minio.io/client/mc/release/linux-amd64/mc -q -P /usr/local/bin/
-          chmod +x /usr/local/bin/minio
-          chmod +x /usr/local/bin/mc
-          minio --version
-          mc --version
+          if [ "${{ steps.minio-cache.outputs.cache-hit }}" != 'true' ]; then
+            GOBIN=~/minio/bin CGO_ENABLED=0 go install github.com/minio/minio@RELEASE.2025-10-15T17-29-55Z
+            GOBIN=~/minio/bin CGO_ENABLED=0 go install github.com/minio/mc@RELEASE.2025-08-13T08-35-41Z
+          fi
+          echo ~/minio/bin >> "$GITHUB_PATH"
 ```
 
 If you're using `php artisan serve`, make sure you don't use the `--no-reload` flag, as the `.env` file will be changed on-the-fly.
@@ -95,32 +116,23 @@ Optionally, if you want persistent storage across the test suite, you may start 
 jobs:
   test:
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Download MinIO S3 server and client
-        run: |
-          wget https://dl.minio.io/server/minio/release/linux-amd64/minio -q -P /usr/local/bin/
-          wget https://dl.minio.io/client/mc/release/linux-amd64/mc -q -P /usr/local/bin/
-          chmod +x /usr/local/bin/minio
-          chmod +x /usr/local/bin/mc
-          minio --version
-          mc --version
+      # The checkout, cache, Setup Go, and install steps from the example above...
 
       - name: Run MinIO S3 server
         run: |
           mkdir ~/s3
-          sudo minio server ~/s3 --json > minio-log.json &
+          minio server ~/s3 --json > minio-log.json &
 
       - name: Configure MinIO S3
         run: |
-          mc config host add local http://127.0.0.1:9000 minioadmin minioadmin
+          until mc alias set local http://127.0.0.1:9000 minioadmin minioadmin; do sleep 1; done
           mc admin user add local user password
-          mc admin policy set local readwrite user=user
+          mc admin policy attach local readwrite --user=user
           mc mb local/bucket-name --region=eu-west-1
 
       - name: Upload Minio Logs (optional)
         if: failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: minio
           path: minio-log.json
