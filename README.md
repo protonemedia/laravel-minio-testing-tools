@@ -77,7 +77,7 @@ That's it!
 
 ## GitHub Actions
 
-You may build the MinIO Server and Client from source before the tests run, and cache them for later runs:
+You may build the MinIO Server and Client from source before the tests run:
 
 ```yaml
 jobs:
@@ -85,15 +85,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Cache MinIO S3 server and client
-        id: minio-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/minio/bin
-          key: minio-RELEASE.2025-10-15T17-29-55Z-mc-RELEASE.2025-08-13T08-35-41Z-${{ runner.os }}-${{ runner.arch }}
-
       - name: Setup Go
-        if: steps.minio-cache.outputs.cache-hit != 'true'
         uses: actions/setup-go@v5
         with:
           go-version: stable
@@ -101,10 +93,8 @@ jobs:
 
       - name: Install MinIO S3 server and client
         run: |
-          if [ "${{ steps.minio-cache.outputs.cache-hit }}" != 'true' ]; then
-            GOBIN=~/minio/bin CGO_ENABLED=0 go install github.com/minio/minio@RELEASE.2025-10-15T17-29-55Z
-            GOBIN=~/minio/bin CGO_ENABLED=0 go install github.com/minio/mc@RELEASE.2025-08-13T08-35-41Z
-          fi
+          GOBIN=~/minio/bin CGO_ENABLED=0 go install github.com/minio/minio@RELEASE.2025-10-15T17-29-55Z
+          GOBIN=~/minio/bin CGO_ENABLED=0 go install github.com/minio/mc@RELEASE.2025-08-13T08-35-41Z
           echo ~/minio/bin >> "$GITHUB_PATH"
 ```
 
@@ -116,7 +106,7 @@ Optionally, if you want persistent storage across the test suite, you may start 
 jobs:
   test:
     steps:
-      # The checkout, cache, Setup Go, and install steps from the example above...
+      # The checkout, Setup Go, and install steps from the example above...
 
       - name: Run MinIO S3 server
         run: |
