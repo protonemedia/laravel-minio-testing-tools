@@ -48,14 +48,31 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Download MinIO S3 server and client
+      # MinIO no longer publishes binaries, so we build the last releases of
+      # the server and client from source once and cache them for later runs.
+      - name: Cache MinIO S3 server and client
+        id: minio-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/minio/bin
+          key: minio-RELEASE.2025-10-15T17-29-55Z-mc-RELEASE.2025-08-13T08-35-41Z-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Setup Go
+        if: steps.minio-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: false
+
+      - name: Install MinIO S3 server and client
         run: |
-          wget https://dl.minio.io/server/minio/release/linux-amd64/minio -q -P /usr/local/bin/
-          wget https://dl.minio.io/client/mc/release/linux-amd64/mc -q -P /usr/local/bin/
-          chmod +x /usr/local/bin/minio
-          chmod +x /usr/local/bin/mc
-          minio --version
-          mc --version
+          if [ "${{ steps.minio-cache.outputs.cache-hit }}" != 'true' ]; then
+            GOBIN=~/minio/bin CGO_ENABLED=0 go install github.com/minio/minio@RELEASE.2025-10-15T17-29-55Z
+            GOBIN=~/minio/bin CGO_ENABLED=0 go install github.com/minio/mc@RELEASE.2025-08-13T08-35-41Z
+          fi
+          echo ~/minio/bin >> "$GITHUB_PATH"
+          ~/minio/bin/minio --version
+          ~/minio/bin/mc --version
 
       - name: Execute tests
         run: vendor/bin/pest
